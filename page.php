@@ -1,7 +1,8 @@
 <?php
 	$myname = "Andrus Rinde";
+	$weekdaydet = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
 	$currenttime = date("d.m.Y H:i:s");
-	$timehtml = "\n <p>Lehe avamise hetkel oli: " .$currenttime .".</p> \n";
+	$timehtml = "\n <p>Lehe avamise hetkel oli: " .$weekdaydet[date("N") - 1] .", " .$currenttime .".</p> \n";
 	$semesterbegin = new DateTime("2021-1-25");
 	$semesterend = new DateTime("2021-6-30");
 	$semesterduration = $semesterbegin->diff($semesterend);
@@ -11,11 +12,17 @@
 	$fromsemesterbegin = $semesterbegin->diff($today);
 	$fromsemesterbegindays = $fromsemesterbegin->format("%r%a");
 	
-	if($fromsemesterbegindays <= $semesterdurationdays){
-		$semesterprogress = "\n"  .'<p>Semester edeneb: <meter min="0" max="' .$semesterdurationdays .'" value="' .$fromsemesterbegindays .'"></meter>.</p>' ."\n";
-		//<p>Semester edeneb: <meter min="0" max="156" value="35"></meter>
+	if($fromsemesterbegindays>0){
+		if($fromsemesterbegindays <= $semesterdurationdays){
+			$semesterprogress = "\n"  .'<p>Semester edeneb: <meter min="0" max="' .$semesterdurationdays .'" value="' .$fromsemesterbegindays .'"></meter>.</p>' ."\n";
+			//<p>Semester edeneb: <meter min="0" max="156" value="35"></meter>
+		} else {
+			$semesterprogress = "\n <p>Semester on lõppenud.</p> \n";
+		}
+	} elseif($fromsemesterbegindays===0) {
+		$semesterprogress = "\n <p>Semester algab täna.</p> \n";
 	} else {
-		$semesterprogress = "\n <p>Semester on lõppenud.</p> \n";
+		$semesterprogress = "\n <p>Semestri alguseni jäänud päevi: " . (abs($fromsemesterbegindays) + 1) .".</p> \n";
 	}
 	
 	//loeme piltide kataloogi sisu
@@ -24,7 +31,9 @@
 	//echo $allfiles[5];
 	//var_dump($allfiles);
 	$allowedphototypes = ["image/jpeg", "image/png"];
+	$photocountlimit = 3;
 	$picfiles = [];
+	$photostoshow = [];
 	
 	//for($x = 0; $x <10;$++){
 		//tegevus
@@ -40,8 +49,20 @@
 	}
 	
 	$photocount = count($picfiles);
-	$photonum = mt_rand(0, $photocount-1);
-	$randomphoto = $picfiles[$photonum];
+	if($photocount < 3){
+		$photocountlimit = $photocount;
+	}
+	for ($i = 0; $i < $photocountlimit; $i ++){
+		do {
+			$photonum = mt_rand(0, $photocount-1);
+		} while (in_array($photonum, $photostoshow));
+		array_push($photostoshow, $photonum);
+	}
+	//$randomphoto = $picfiles[$photonum];
+	$randomphotoshtml = "";
+	foreach($photostoshow as $photoindex){
+		$randomphotoshtml .=  "\n \t" .'<img src="' .$picsdir .$picfiles[$photoindex] .'" alt="vaade Haapsalus">';
+	}
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -60,8 +81,9 @@
 		echo $timehtml;
 		echo $semesterdurhtml;
 		echo $semesterprogress;
+		echo $randomphotoshtml;
 	?>
-	<img src="<?php echo $picsdir .$randomphoto; ?>" alt="vaade Haapsalus">
+	<!--<img src="<?php echo $picsdir .$randomphoto; ?>" alt="vaade Haapsalus">-->
 	<!--https://tigu.hk.tlu.ee/~andrus.rinde/vr2021/pics/IMG_0177.JPG-->
 </body>
 </html>
