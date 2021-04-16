@@ -65,7 +65,7 @@
 		$birth_year_error = "Palun vali sünniaasta!";
 	}
 	
-	//kuupäeva vallidsus ehk reaalsuse kontroll
+	//kuupäeva valiidsus ehk reaalsuse kontroll
 	if(empty($birth_day_error) and empty($birth_month_error) and empty($birth_year_error)){
 		if(checkdate($birth_month, $birth_day, $birth_year)){
 			$temp_date = new DateTime($birth_year ."-" .$birth_month ."-" .$birth_day);
@@ -104,7 +104,13 @@
 		}
 	}
 	
-	 
+	//kui vigu pole, siis salvestame
+	if(empty($name_error) and empty($surname_error) and empty($birth_month_error) and empty($birth_year_error) and empty($birth_day_error)and empty($birth_date_error) and empty($gender_error) and empty($email_error) and empty($password_error) and empty($confirm_password_error)){
+		//salvestus ehk kasutaja loomine
+		$notice = sign_up($name, $surname, $gender, $birth_date, $email, $_POST["password_input"]);
+	}
+	
+	
 	
   } //kui on nuppu vajutatud
   
@@ -115,7 +121,7 @@
 <html lang="et">
   <head>
     <meta charset="utf-8">
-	<title>Veebirakendused ja nende loomine 2020</title>
+	<title>Veebirakendused ja nende loomine 2021</title>
   </head>
   <body>
     <h1>Loo endale kasutajakonto</h1>
