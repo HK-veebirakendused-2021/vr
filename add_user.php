@@ -46,17 +46,64 @@
 		$gender_error = "Palun märgi sugu!";
 	}
 
-		//email ehk kasutajatunnus
+	//kontrollime kuupäeva sisestust
+	if(!empty($_POST["birth_day_input"])){
+		$birth_day = intval($_POST["birth_day_input"]);
+	} else {
+		$birth_day_error = "Palun vali sünnikuupäev!";
+	}
 	
-	  if (isset($_POST["email"]) and !empty($_POST["email"])){
+	if(!empty($_POST["birth_month_input"])){
+		$birth_month = intval($_POST["birth_month_input"]);
+	} else {
+		$birth_month_error = "Palun vali sünnikuu!";
+	}
+	
+	if(!empty($_POST["birth_year_input"])){
+		$birth_year = intval($_POST["birth_year_input"]);
+	} else {
+		$birth_year_error = "Palun vali sünniaasta!";
+	}
+	
+	//kuupäeva vallidsus ehk reaalsuse kontroll
+	if(empty($birth_day_error) and empty($birth_month_error) and empty($birth_year_error)){
+		if(checkdate($birth_month, $birth_day, $birth_year)){
+			$temp_date = new DateTime($birth_year ."-" .$birth_month ."-" .$birth_day);
+			$birth_date = $temp_date->format("Y-m-d");
+		} else {
+			$birth_date_error = "Valitud kuupäev on vigane!";
+		}
+	}
+
+	//email ehk kasutajatunnus
+
+	if (isset($_POST["email"]) and !empty($_POST["email"])){
 		$email = test_input($_POST["email"]);
 		$email = filter_var($email, FILTER_VALIDATE_EMAIL);
 		if ($email === false) {
 			$email_error = "Palun sisesta korrektne e-postiaadress!";
 		}
-	  } else {
-		  $email_error = "Palun sisesta e-postiaadress!";
-	  }
+	} else {
+		$email_error = "Palun sisesta e-postiaadress!";
+	}
+	
+	//parooli ehk salasõna kontroll
+	if(!empty($_POST["password_input"])){
+		if(strlen($_POST["password_input"])<8){
+			$password_error = "Liiga lühike salasõna!";
+		}
+	} else {
+		$password_error = "Palun sisestage salasõna!";
+	}
+	
+	if(empty($_POST["confirmpassword_input"])){
+		$confirm_password_error = "Palun sisestage salasõna kaks korda!";
+	} else {
+		if($_POST["confirmpassword_input"] != $_POST["password_input"]){
+			$confirm_password_error = "Sisestatud salasõnad ei ole ühesugused!";
+		}
+	}
+	
 	 
 	
   } //kui on nuppu vajutatud
@@ -82,8 +129,8 @@
 	  <input name="surname_input" type="text" value="<?php echo $surname; ?>"><span><?php echo $surname_error; ?></span>
 	  <br>
 	  
-	  <input type="radio" name="gender_input" value="2" <?php if($gender == "2"){		echo " checked";} ?>><label>Naine</label>
-	  <input type="radio" name="gender_input" value="1" <?php if($gender == "1"){		echo " checked";} ?>><label>Mees</label><br>
+	  <input type="radio" name="gender_input" value="2" <?php if($gender == "2"){echo " checked";} ?>><label>Naine</label>
+	  <input type="radio" name="gender_input" value="1" <?php if($gender == "1"){echo " checked";} ?>><label>Mees</label><br>
 	  <span><?php echo $gender_error; ?></span>
 	  <br>
 	  
@@ -134,9 +181,9 @@
 	  <label>E-mail (kasutajatunnus):</label><br>
 	  <input type="email" name="email" value="<?php echo $email; ?>"><span><?php echo $email_error; ?></span><br>
 	  <label>Salasõna (min 8 tähemärki):</label><br>
-	  <input name="password" type="password"><span><?php echo $password_error; ?></span><br>
+	  <input name="password_input" type="password"><span><?php echo $password_error; ?></span><br>
 	  <label>Korrake salasõna:</label><br>
-	  <input name="confirmpassword" type="password"><span><?php echo $confirm_password_error; ?></span><br>
+	  <input name="confirmpassword_input" type="password"><span><?php echo $confirm_password_error; ?></span><br>
 	  <input name="user_data_submit" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span>
 	</form>
 	<hr>
