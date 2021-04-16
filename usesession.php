@@ -1,9 +1,9 @@
 <?php
   require("classes/SessionManager.class.php");
-  SessionManager::sessionStart("vp", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
+  SessionManager::sessionStart("vr", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
   
   //kas on sisse loginud
-  if(!isset($_SESSION["userid"])){
+  if(!isset($_SESSION["user_id"])){
 	//jõuga suunatakse sisselogimise lehele
 	header("Location: page.php");
 	exit();

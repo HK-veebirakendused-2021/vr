@@ -1,5 +1,7 @@
 <?php
-	session_start();
+	//session_start();
+	require("classes/SessionManager.class.php");
+	SessionManager::sessionStart("vr", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
 	
 	require_once "../../../conf.php";
 	//require_once "fnc_general.php";
