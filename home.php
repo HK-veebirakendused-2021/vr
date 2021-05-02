@@ -23,6 +23,11 @@
 	<h1>Sisseloginud kasutaja, vinge süsteem</h1>
 	<p>See leht on valminud õppetöö raames!</p>
 	<hr>
-	<p><a href="?logout=1">Logi välja</a></p>
+	<ul>
+		<li><a href="?logout=1">Logi välja</a></li>
+		<li><a href="add_news.php">Uudiste lisamine</a></li>
+		<li><a href="show_news.php">Uudiste lugemine</a></li>
+		<li><a href="upload_photo.php">Fotode üleslaadimine</a></li>
+	</ul>
 </body>
 </html>

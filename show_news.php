@@ -1,5 +1,5 @@
 <?php
-	
+	require_once "usesession.php";
 	require_once "../../../conf.php";
 	require_once "fnc_general.php";
 	
@@ -53,6 +53,9 @@
 <body>
 	<h1>Uudiste lugemine</h1>
 	<p>See leht on valminud õppetöö raames!</p>
+	<hr>
+	<p><a href="?logout=1">Logi välja</a></p>
+	<p><a href="home.php">Avalehele</a></p>
 	<hr>
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 		<label for="news_limit_input">Mitu uudist korraga näidata: </label>
