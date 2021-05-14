@@ -11,9 +11,6 @@
 	$file_size_limit = 1 * 1024 * 1024;
 	$image_max_w = 600;
 	$image_max_h = 400;
-	$image_thumbnail_size = 100;
-	$notice = null;
-	
 	if(isset($_POST["photo_submit"])){
 		//var_dump($_POST);
 		//var_dump($_FILES);
@@ -53,61 +50,50 @@
 					$temp_image = imagecreatefrompng($_FILES["file_input"]["tmp_name"]);
 				}
 				
-				//kasutan foto suuruse muutmise funktsiooni
-				//kuvasuhte säilitamise tegin kodutöös öeldule vastupidi ehk: kui peab kuvasuhte säilitama, siis on true
-				//siinjuures on funktsioonis see true määratud vaikeväärtuseks ja funktsioonile on vaja edastada väärtus
-				//vaid siis, kui on false ehk on vaja kärpida
-				$new_temp_image = resize_photo($temp_image, $image_max_w, $image_max_h);
+				$image_w = imagesx($temp_image);
+				$image_h = imagesy($temp_image);
+				
+				//kuvasuhte säilitamiseks arvutame suuruse muutuse kordaja lähtudes kõrgusest või laiusest
+				if($image_w / $image_max_w > $image_h / $image_max_h){
+					$image_size_ratio = $image_w / $image_max_w;
+				} else {
+					$image_size_ratio = $image_h / $image_max_h;
+				}
+				
+				$image_new_w = round($image_w / $image_size_ratio);
+				$image_new_h = round($image_h / $image_size_ratio);
+				
+				//vähendamiseks loome uue image objekti, kuhu kopeerime vähendatud kujutise
+				$new_temp_image = imagecreatetruecolor($image_new_w, $image_new_h);
+				imagecopyresampled($new_temp_image, $temp_image, 0, 0, 0, 0, $image_new_w, $image_new_h, $image_w, $image_h);
 				
 				//salvestame pikslikgumi faili
 				$target_file = "../upload_photos_normal/" .$image_file_name;
-				$result = save_image_to_file($new_temp_image, $target_file, $image_file_type);
-				if($result == 1) {
-					$notice = "Vähendatud pilt laeti üles! ";
-				} else {
-					$photo_upload_error = "Vähendatud pildi salvestamisel tekkis viga!";
+				if($image_file_type == "jpg"){
+					if(imagejpeg($new_temp_image, $target_file, 90)){
+						$photo_upload_error = "Vähendatud pilt on salvestatud!";
+					} else {
+						$photo_upload_error = "Vähendatud pilti ei salvestatud!";
+					}
+				}
+				if($image_file_type == "png"){
+					if(imagepng($new_temp_image, $target_file, 6)){
+						$photo_upload_error = "Vähendatud pilt on salvestatud!";
+					} else {
+						$photo_upload_error = "Vähendatud pilti ei salvestatud!";
+					}
 				}
 				
-				//unustasin, et ilus oleks ka pildiobjektid tühistada, kui neid enam vaja pole
-				imagedestroy($new_temp_image);
-				
-				//teen pisipildi
-				$new_temp_image = resize_photo($temp_image, $image_thumbnail_size, $image_thumbnail_size, false);
-				
-				//salvestame pisipildi faili
-				$target_file = "../upload_photos_thumbnail/" .$image_file_name;
-				$result = save_image_to_file($new_temp_image, $target_file, $image_file_type);
-				if($result == 1) {
-					$notice .= " Pisipilt laeti üles! ";
-				} else {
-					$photo_upload_error .= " Vähendatud pildi salvestamisel tekkis viga!";
-				}
-				
-				//unustasin, et ilus oleks ka pildiobjektid tühistada, kui neid enam vaja pole
-				imagedestroy($new_temp_image);
-				imagedestroy($temp_image);
 				
 				//$target_file = "../upload_photos_orig/" .$_FILES["file_input"]["name"];
 				$target_file = "../upload_photos_orig/" .$image_file_name;
 				//if(file_exists($target_file))
 				if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
-					$notice .= " Originaalfoto üleslaadimine õnnestus!";
+					$photo_upload_error .= " Foto üleslaadimine õnnestus!";
 				} else {
-					$photo_upload_error .= " Originaalfoto üleslaadimine ebaõnnestus!";
-				}
-				
-			}
-			
-			//kui kõik hästi, salvestame info andmebaasi!!!
-			if($photo_upload_error == null){
-				$result = store_photo_data($image_file_name, $_POST["alt_input"], $_POST["privacy_input"], $_FILES["file_input"]["name"]);
-				if($result == 1){
-					$notice .= " Pildi andmed lisati andmebaasi!";
-				} else {
-					$photo_upload_error = "Pildi andmete lisamisel andmebaasi tekkis tehniline tõrge: " .$result;
+					$photo_upload_error .= " Foto üleslaadimine ebaõnnestus!";
 				}
 			}
-			
 		}
 	}
 	
@@ -130,7 +116,7 @@
 		<input id="file_input" name="file_input" type="file">
 		<br>
 		<label for="alt_input">Alternatiivtekst ehk pildi selgitus</label>
-		<input id="alt_input" name="alt_input" type="text" placeholder="Pildil on ...">
+		<input id="alt_text" name="alt_text" type="text" placeholder="Pildil on ...">
 		<br>
 		<label>Privaatsustase: </label>
 		<br>
@@ -145,6 +131,6 @@
 		<br>
 		<input type="submit" name="photo_submit" value="Lae pilt üles!">
 	</form>
-	<p><?php echo $photo_upload_error; echo $notice; ?></p>
+	<p><?php echo $photo_upload_error; ?></p>
 </body>
 </html>
