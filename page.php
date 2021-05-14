@@ -13,7 +13,7 @@
 	echo " Avalik number on ".$test_object->non_secret .". ";
 	$test_object->reveal();
 	unset($test_object);
-	echo " Avalik number on ".$test_object->non_secret .". ";
+	//echo " Avalik number on ".$test_object->non_secret .". ";
 	
 	$myname = "Andrus Rinde";
 	$weekdaydet = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];

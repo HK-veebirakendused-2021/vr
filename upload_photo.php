@@ -14,14 +14,13 @@
 	$image_max_h = 400;
 	$image_thumbnail_size = 100;
 	$notice = null;
+	$watermark = "../images/vr_watermark.png";
 	
 	if(isset($_POST["photo_submit"])){
-		//var_dump($_POST);
-		//var_dump($_FILES);
 		//kas üldse on pilt
 		$check = getimagesize($_FILES["file_input"]["tmp_name"]);
 		if($check !== false){
-			//kontrollime, kas aktepteeritud failivorming ja fikseerime laiendi
+			//kontrollime, kas aktsepteeritud failivorming ja fikseerime laiendi
 			if($check["mime"] == "image/jpeg"){
 				$image_file_type = "jpg";
 			} elseif ($check["mime"] == "image/png"){
@@ -49,51 +48,34 @@
 				$timestamp = microtime(1) * 10000;
 				$image_file_name = $file_name_prefix .$timestamp ."." .$image_file_type;
 				
-				//suuruse muutmine
-				//loome pikslikogumi ehk image objekti
-				/* $temp_image = null;
-				if($image_file_type == "jpg"){
-					$temp_image = imagecreatefromjpeg($_FILES["file_input"]["tmp_name"]);
-				}
-				if($image_file_type == "png"){
-					$temp_image = imagecreatefrompng($_FILES["file_input"]["tmp_name"]);
-				} */
+				$photo_upload->resize_photo($image_max_w, $image_max_h);
 				
-				//kasutan foto suuruse muutmise funktsiooni
-				//kuvasuhte säilitamise tegin kodutöös öeldule vastupidi ehk: kui peab kuvasuhte säilitama, siis on true
-				//siinjuures on funktsioonis see true määratud vaikeväärtuseks ja funktsioonile on vaja edastada väärtus
-				//vaid siis, kui on false ehk on vaja kärpida
-				$new_temp_image = resize_photo($temp_image, $image_max_w, $image_max_h);
+				//lisan vesimärgi
+				$photo_upload->add_watermark($watermark);
 				
 				//salvestame pikslikgumi faili
 				$target_file = "../upload_photos_normal/" .$image_file_name;
-				$result = save_image_to_file($new_temp_image, $target_file, $image_file_type);
+				$result = $photo_upload->save_image_to_file($target_file);
 				if($result == 1) {
 					$notice = "Vähendatud pilt laeti üles! ";
 				} else {
 					$photo_upload_error = "Vähendatud pildi salvestamisel tekkis viga!";
 				}
 				
-				//unustasin, et ilus oleks ka pildiobjektid tühistada, kui neid enam vaja pole
-				imagedestroy($new_temp_image);
-				
 				//teen pisipildi
-				$new_temp_image = resize_photo($temp_image, $image_thumbnail_size, $image_thumbnail_size, false);
+				$photo_upload->resize_photo($image_thumbnail_size, $image_thumbnail_size, false);
 				
 				//salvestame pisipildi faili
 				$target_file = "../upload_photos_thumbnail/" .$image_file_name;
-				$result = save_image_to_file($new_temp_image, $target_file, $image_file_type);
+				$result = $photo_upload->save_image_to_file($target_file);
 				if($result == 1) {
 					$notice .= " Pisipilt laeti üles! ";
 				} else {
 					$photo_upload_error .= " Pisipildi salvestamisel tekkis viga!";
 				}
 				
-				//unustasin, et ilus oleks ka pildiobjektid tühistada, kui neid enam vaja pole
-				imagedestroy($new_temp_image);
-				imagedestroy($temp_image);
+				unset($photo_upload);
 				
-				//$target_file = "../upload_photos_orig/" .$_FILES["file_input"]["name"];
 				$target_file = "../upload_photos_orig/" .$image_file_name;
 				//if(file_exists($target_file))
 				if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
