@@ -80,7 +80,7 @@
 				if($result == 1) {
 					$notice .= " Pisipilt laeti üles! ";
 				} else {
-					$photo_upload_error .= " Vähendatud pildi salvestamisel tekkis viga!";
+					$photo_upload_error .= " Pisipildi salvestamisel tekkis viga!";
 				}
 				
 				//unustasin, et ilus oleks ka pildiobjektid tühistada, kui neid enam vaja pole

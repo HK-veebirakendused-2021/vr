@@ -1,11 +1,19 @@
 <?php
 	//session_start();
-	require("classes/SessionManager.class.php");
+	require_once "classes/SessionManager.class.php";
 	SessionManager::sessionStart("vr", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
 	
 	require_once "../../../conf.php";
 	//require_once "fnc_general.php";
 	require_once "fnc_user.php";
+	
+	//klassi näide
+	require_once "classes/Test.class.php";
+	$test_object = new Test(5);
+	echo " Avalik number on ".$test_object->non_secret .". ";
+	$test_object->reveal();
+	unset($test_object);
+	echo " Avalik number on ".$test_object->non_secret .". ";
 	
 	$myname = "Andrus Rinde";
 	$weekdaydet = ["esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"];
