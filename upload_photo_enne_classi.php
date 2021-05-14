@@ -3,7 +3,6 @@
 	require_once "../../../conf.php";
 	require_once "fnc_general.php";
 	require_once "fnc_upload_photo.php";
-	require_once "classes/Upload_photo.class.php";
 	
 	$photo_upload_error = null;
 	$image_file_type = null;
@@ -40,24 +39,19 @@
 			}
 			
 			if(empty($photo_upload_error)){
-				
-				//Võtame kasutusele Upload_photo klassi
-				$photo_upload = new Upload_photo($_FILES["file_input"], $image_file_type);
-				
-				
 				//loome oma failinime
 				$timestamp = microtime(1) * 10000;
 				$image_file_name = $file_name_prefix .$timestamp ."." .$image_file_type;
 				
 				//suuruse muutmine
 				//loome pikslikogumi ehk image objekti
-				/* $temp_image = null;
+				$temp_image = null;
 				if($image_file_type == "jpg"){
 					$temp_image = imagecreatefromjpeg($_FILES["file_input"]["tmp_name"]);
 				}
 				if($image_file_type == "png"){
 					$temp_image = imagecreatefrompng($_FILES["file_input"]["tmp_name"]);
-				} */
+				}
 				
 				//kasutan foto suuruse muutmise funktsiooni
 				//kuvasuhte säilitamise tegin kodutöös öeldule vastupidi ehk: kui peab kuvasuhte säilitama, siis on true
