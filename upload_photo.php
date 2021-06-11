@@ -105,6 +105,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Veebirakendused ja nende loomine 2021</title>
+    <script src="javascript/checkImageSize.js" defer></script>
 </head>
 <body>
 	<h1>Fotode üleslaadimine</h1>
@@ -131,8 +132,8 @@
 		<input id="privacy_input_3" name="privacy_input" type="radio" value="1">
 		<label for="privacy_input_3">Avalik</label>
 		<br>
-		<input type="submit" name="photo_submit" value="Lae pilt üles!">
+		<input type="submit" id="photo_submit" name="photo_submit" value="Lae pilt üles!">
 	</form>
-	<p><?php echo $photo_upload_error; echo $notice; ?></p>
+	<p id="notice"><?php echo $photo_upload_error; echo $notice; ?></p>
 </body>
 </html>
