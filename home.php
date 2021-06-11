@@ -28,6 +28,7 @@
 		<li><a href="add_news.php">Uudiste lisamine</a></li>
 		<li><a href="show_news.php">Uudiste lugemine</a></li>
 		<li><a href="upload_photo.php">Fotode üleslaadimine</a></li>
+		<li><a href="photogallery_loginusers.php">Fotogalerii</a></li>
 	</ul>
 </body>
 </html>
